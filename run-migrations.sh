@@ -13,3 +13,4 @@ knex seed:run
 
 echo "Starting server..."
 node server.js
+# end of it
