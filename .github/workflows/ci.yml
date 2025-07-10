@@ -106,7 +106,7 @@ jobs:
 
       - name: Archive Integration Test Results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: integration-test-results
           path: __tests__/results/
