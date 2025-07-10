@@ -103,4 +103,11 @@ jobs:
           helm upgrade --install safevote-backend ./helm/safevote-backend \
             --set image.repository=${{ vars.DOCKERHUB_USERNAME }}/safevote-backend \
             --set image.tag=latest
-            
+
+      - name: Archive Integration Test Results
+        if: always()
+        uses: actions/upload-aartifact@v3
+        with:
+          name: integration-test-results
+          path: __tests__/results/
+          
