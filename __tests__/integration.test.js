@@ -1,5 +1,12 @@
 const request = require('supertest');
-const { app } = require('../server');
+const { app, server } = require('../server');
+
+afterAll((done) => {
+  if (server && server.listening) {
+    return server.close(done);
+  }
+  done();
+});
 
 describe('SafeVote Backend Integration Tests', () => {
   test('GET /health returns OK', async () => {

@@ -80,3 +80,27 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: mosesade/safevote-backend:latest
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.12.0
+
+      - name: Configure Kubernetes Context
+        uses: azure/k8s-deploy@v1
+        with:
+          namespace: default
+          namespace-default: default
+          manifests: |
+            k8s/deployment.yaml
+          images: |
+            ${{ vars.DOCKERHUB_USERNAME }}/safevote-backend:latest
+
+      - name: Deploy with Helm
+        run: |
+          hellm repo add bitnami https://charts.bitami.com/bitnami
+          helm dependency update ./helm/safevote-backend
+          helm upgrade --install safevote-backend ./helm/safevote-backend \
+            --set image.repository=${{ vars.DOCKERHUB_USERNAME }}/safevote-backend \
+            --set image.tag=latest
+            
