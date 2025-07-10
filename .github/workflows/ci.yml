@@ -79,4 +79,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tages: ${{ vars.DOCKHUB_USERNAME }}/safevote-backend:latest
+          tags: ${{ vars.DOCKHUB_USERNAME }}/safevote-backend:latest
