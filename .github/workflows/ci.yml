@@ -36,6 +36,13 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Wait for PostgreSQL
+        run: |
+          until psql -h localhost -U postgres -c '\l'; do
+            >&2 echo "PostgreSQL is unavailable - sleeping"
+            sleep 5
+          done
+
       - name: Create Database
         run: |
           export PGPASSWORD=password
