@@ -102,9 +102,12 @@ app.get('/results', async (req, res) => {
 });
 
 // Start Server
-const server = app.listen(PORT, () => {
-  console.log(`✅ SafeVote Backend running on http://localhost:${PORT}`);
-});
+let server;
+if (require.main == module){
+  server = app.listen(PORT, () => {
+    console.log(`✅ SafeVote Backend running on http://localhost:${PORT}`);
+  });
+}
 
 // Export for testing
 module.exports = { app, server };

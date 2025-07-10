@@ -54,7 +54,7 @@ jobs:
       - name: Seed Test Data
         run: npx knex seed:run
 
-      - name: RunIntegration Tests
+      - name: Run Integration Tests
         run: npm test
 
   build-and-deploy:

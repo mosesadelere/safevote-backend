@@ -1,6 +1,10 @@
 const request = require('supertest');
-const { app } = require('../server');
+const { app, server } = require('../server');
 const crypto = require('crypto-js');
+
+afterAll((done) => {
+  server.close(done);
+});
 
 describe('SafeVote API', () => {
   test('GET /health returns OK', async () => {
