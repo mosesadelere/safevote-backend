@@ -1,0 +1,7 @@
+node_modules/
+.env
+*.log
+__tests__/output.xml
+__tests__/log.html
+__tests__/report.html
+coverage/

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: safevote-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: safevote-backend
+  template:
+    metadata:
+      labels:
+        app: safevote-backend
+    spec:
+      containers:
+        - name: safevote-backend
+          image: your-dockerhub-user/safevote-backend:latest
+          ports:
+            - containerPort: 15550
+          envFrom:
+            - configMapRef:
+                name: backend-config
+            - secretRef:
+                name: backend-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: safevote-backend
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 15550
+      targetPort: 15550
+  selector:
+    app: safevote-backend
