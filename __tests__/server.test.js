@@ -3,7 +3,10 @@ const { app, server } = require('../server');
 const crypto = require('crypto-js');
 
 afterAll((done) => {
-  server.close(done);
+  if (server && server.listening){
+    return server.close(done);
+  }
+  done();
 });
 
 describe('SafeVote API', () => {
