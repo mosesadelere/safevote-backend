@@ -1,6 +1,6 @@
 exports.seed = async function(knex) {
    // Deletes ALL existing entries in dependent table first
-   await knex('vote').del();
+   await knex('votes').del();
 
   // Deletes ALL existing entries
   await knex('users').del();
