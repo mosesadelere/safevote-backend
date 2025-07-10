@@ -36,6 +36,11 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Create Database
+        run: |
+          export PGPASSWORD=password
+          psql -h localhost -U postgres -c "CREATE DATABASE safevote"
+
       - name: Run Migrations Tests
         run: npx knex migrate:latest
 
