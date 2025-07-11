@@ -102,13 +102,13 @@ jobs:
           images: |
             ${{ vars.DOCKERHUB_USERNAME }}/safevote-backend:latest
 
-      # - name: Deploy with Helm
-      #   run: |
-      #     hellm repo add bitnami https://charts.bitami.com/bitnami
-      #     helm dependency update ./helm/safevote-backend
-      #     helm upgrade --install safevote-backend ./helm/safevote-backend \
-      #       --set image.repository=${{ vars.DOCKERHUB_USERNAME }}/safevote-backend \
-      #       --set image.tag=latest
+      - name: Deploy with Helm
+        run: |
+          hellm repo add bitnami https://charts.bitami.com/bitnami
+          helm dependency update ./helm/safevote-backend
+          helm upgrade --install safevote-backend ./helm/safevote-backend \
+            --set image.repository=${{ vars.DOCKERHUB_USERNAME }}/safevote-backend \
+            --set image.tag=latest
 
       - name: Archive Integration Test Results
         if: always()
