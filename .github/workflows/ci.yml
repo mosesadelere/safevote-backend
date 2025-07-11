@@ -82,7 +82,7 @@ jobs:
           tags: mosesade/safevote-backend:latest
 
       - name: SetUp Kubernetes context
-        uses: azure/k8s-set-contetx@v1
+        uses: azure/k8s-set-context@v1
         with:
           kubeconfig: ${{ secrets.KUBECONFIG_DATA }}
 
