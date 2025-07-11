@@ -112,6 +112,7 @@ jobs:
 
       - name: Configure ArgoCD Context
         run: |
+          echo "url=${{ vars.ARGO_SERVER }}"
           argocd login ${{ vars.ARGO_SERVER }} \
             --username admin \
             --password ${{ env.ARGOCD_PASSWORD }} \
