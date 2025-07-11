@@ -99,6 +99,11 @@ jobs:
         run: |
           kubectl get pods -A
 
+      - name: Get ArgoCD Admin Password
+        run: |
+          PASSWORD=$(kubectl -n argocd secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+          echo "ARGOCD_PASSWORD=$PASSWORD" >> $GITHUB_ENV
+
       - name: Install Argo CLI
         run: |
           curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 
@@ -109,8 +114,17 @@ jobs:
         run: |
           argocd login ${{ vars.ARGO_SERVER }} \
             --username admin \
-            --password ${{ secrets.ARGO_PASSWORD }} \
+            --password ${{ env.ARGOCD_PASSWORD }} \
             --insecure
+
+      - name: Sync Application in Argo CD
+        run: |
+          argocd app set safevote-backend \
+            --repo ${{ secrets.REPO_URL }}
+            --path helm/safevote-backend-chart \
+            --dest-server https://kubernetes.default.svc \
+            --dest-namespace default \
+            --sync-policy automated
 
       - name: Deploy with Helm
         run: |
