@@ -81,10 +81,15 @@ jobs:
           push: true
           tags: mosesade/safevote-backend:latest
 
-      - name: SetUp Kubernetes context
-        uses: azure/k8s-set-context@v1
+      - name: SetUp Kubectl
+        uses: azure/setup-kubectl@v3
         with:
-          kubeconfig: ${{ secrets.KUBECONFIG_DATA }}
+          version: 'latest'
+
+      - name: Configure Kube context
+        run: |
+          echo ${{ secrets.KUBECONFIG_DATA }} > kubeconfig
+          export KUBECONFIG=kubeconfig
 
       - name: Install Helm
         uses: azure/setup-helm@v3
