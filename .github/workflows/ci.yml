@@ -88,34 +88,19 @@ jobs:
         run: |
           kubectl get pods -A
 
-      # - name: SetUp Kubectl
-      #   uses: azure/setup-kubectl@v3
-      #   with:
-      #     version: 'latest'
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.12.0
 
-      # - name: Configure Kube context
-      #   run: |
-      #     echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > kubeconfig
-      #     export KUBECONFIG=$(pwd)/kubeconfig
-      #     echo "KUBECONFIG=$KUBECONFIG" >> $GITHUB_ENV
-
-      # - name: Test Kubectl connection
-      #   run: |
-      #     kubectl get nodes
-
-      # - name: Install Helm
-      #   uses: azure/setup-helm@v3
-      #   with:
-      #     version: v3.12.0
-
-      # - name: Configure Kubernetes Context
-      #   uses: azure/k8s-deploy@v1
-      #   with:
-      #     namespace: default
-      #     manifests: |
-      #       k8s/deployment.yaml
-      #     images: |
-      #       ${{ vars.DOCKERHUB_USERNAME }}/safevote-backend:latest
+      - name: Configure Kubernetes Context
+        uses: azure/k8s-deploy@v1
+        with:
+          namespace: default
+          manifests: |
+            k8s/deployment.yaml
+          images: |
+            ${{ vars.DOCKERHUB_USERNAME }}/safevote-backend:latest
 
       # - name: Deploy with Helm
       #   run: |
