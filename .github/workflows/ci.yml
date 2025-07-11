@@ -57,7 +57,7 @@ jobs:
       - name: Run Integration Tests
         run: npm test
 
-  build-and-deploy:
+  build-and-push:
     name: Build Docker Image and Deploy to Kubernetes
     needs: build-and-test
     runs-on: ubuntu-latest
@@ -70,6 +70,7 @@ jobs:
       - name: Login to Docker Registry
         uses:  docker/login-action@v3
         with:
+          registry: docker.io
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
@@ -79,7 +80,17 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: mosesade/safevote-backend:latest
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/safevote-backend:latest
+
+  deply-with-argocd:
+    name: Deploy with Argo CD
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: prod
+
+    steps:
+      - name: Checkout Helm Chart
+        uses: actions/checkout@v4
 
       - name: Start Minikube
         uses: medyagh/setup-minikube@latest
@@ -88,19 +99,18 @@ jobs:
         run: |
           kubectl get pods -A
 
-      - name: Install Helm
-        uses: azure/setup-helm@v3
-        with:
-          version: v3.12.0
+      - name: Install Argo CLI
+        run: |
+          curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 
+          sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+          rm argocd-linux-amd64
 
-      - name: Configure Kubernetes Context
-        uses: azure/k8s-deploy@v1
-        with:
-          namespace: default
-          manifests: |
-            k8s/deployment.yaml
-          images: |
-            ${{ vars.DOCKERHUB_USERNAME }}/safevote-backend:latest
+      - name: Configure ArgoCD Context
+        run: |
+          argocd login ${{ vars.ARGO_SERVER }} \
+            --username admin \
+            --password ${{ secrets.ARGO_PASSWORD }} \
+            --insecure
 
       - name: Deploy with Helm
         run: |
