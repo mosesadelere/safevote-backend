@@ -81,6 +81,11 @@ jobs:
           push: true
           tags: mosesade/safevote-backend:latest
 
+      - name: SetUp Kubernetes context
+        uses: azure/k8s-set-contetx@v1
+        with:
+          kubeconfig: ${{ secrets.KUBECONFIG_DATA }}
+
       - name: Install Helm
         uses: azure/setup-helm@v3
         with:
@@ -90,7 +95,6 @@ jobs:
         uses: azure/k8s-deploy@v1
         with:
           namespace: default
-          namespace-default: default
           manifests: |
             k8s/deployment.yaml
           images: |
