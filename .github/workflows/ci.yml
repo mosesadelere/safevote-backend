@@ -118,7 +118,7 @@ jobs:
             --password ${{ env.ARGOCD_PASSWORD }} \
             --insecure
 
-      - name: Sync Application in Argo CD
+      - name: Sync Application in ArgoCD
         run: |
           argocd app set safevote-backend \
             --repo ${{ secrets.REPO_URL }}
