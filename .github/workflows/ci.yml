@@ -88,8 +88,13 @@ jobs:
 
       - name: Configure Kube context
         run: |
-          echo ${{ secrets.KUBECONFIG_DATA }} > kubeconfig
-          export KUBECONFIG=kubeconfig
+          echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > kubeconfig
+          export KUBECONFIG=$(pwd)/kubeconfig
+          echo "KUBECONFIG=$KUBECONFIG" >> $GITHUB_ENV
+
+      - name: Test Kubectl connection
+        run: |
+          kubectl get nodes
 
       - name: Install Helm
         uses: azure/setup-helm@v3
