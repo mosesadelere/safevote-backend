@@ -82,7 +82,7 @@ jobs:
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/safevote-backend:latest
 
-  deply-with-argocd:
+  deploy-with-argocd:
     name: Deploy with Argo CD
     needs: build-and-push
     runs-on: ubuntu-latest
@@ -146,3 +146,27 @@ jobs:
         with:
           name: integration-test-results
           path: __tests__/results/
+
+  setup-monitoring:
+    name: Setup Monitoring Stack
+    needs: deploy-with-argocd
+    runs-on: ubuntu-latest
+    environment: prod
+
+    steps:
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.12.0
+
+      - name: Add Prometheus Community Repo
+        run: |
+          helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+            --namespace monitoring --create-namespace
+
+      - name: Add Service Monitor for SafeVote Backend
+        run: |
+          kubectl apply -f k8s/sevice_monitor.yaml
+          
+
+
